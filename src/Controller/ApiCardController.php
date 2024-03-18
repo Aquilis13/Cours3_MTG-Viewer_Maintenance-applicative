@@ -25,7 +25,16 @@ class ApiCardController extends AbstractController
     #[OA\Response(response: 200, description: 'List all cards')]
     public function cardAll(): Response
     {
-        $cards = $this->entityManager->getRepository(Card::class)->findAll();
+        // récupère toutes les cartes
+        // $cards = $this->entityManager->getRepository(Card::class)->findAll();
+
+        // Récupère uniquement les 20 premières cartes 
+        $maxResult = 20;
+        $offset = 0;
+
+        $cardRepository = $this->entityManager->getRepository(Card::class);
+        $cards = $cardRepository->findBy([], null, $maxResult, $offset);
+
         return $this->json($cards);
     }
 
