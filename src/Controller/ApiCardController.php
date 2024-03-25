@@ -51,4 +51,24 @@ class ApiCardController extends AbstractController
         }
         return $this->json($card);
     }
+
+    #[Route('/search/{search}', name: 'Show card', methods: ['GET'])]
+    public function cardSearch($search): Response
+    {
+        // Récupère uniquement les 20 premières cartes 
+        $maxResult = 20;
+
+        $cardRepository = $this->entityManager->getRepository(Card::class);
+        $query = $cardRepository->createQueryBuilder('c')
+            ->where('c.name LIKE :searchName')
+            ->orWhere('c.uuid = :searchUuid')
+            ->setParameter('searchName', '%' . $search . '%')
+            ->setParameter('searchUuid', $search)
+            ->setMaxResults($maxResult)
+            ->getQuery();
+
+        $cards = $query->getResult();
+
+        return $this->json($cards);
+    }
 }

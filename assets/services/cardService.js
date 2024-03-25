@@ -13,3 +13,21 @@ export async function fetchCard(uuid) {
     card.text = card.text.replaceAll('\\n', '\n');
     return card;
 }
+
+/**
+ * La recherche se base soit sur la chaine contenu dans le nom ou la correspondance à l'uuid d'une carte
+ * 
+ * @param {String} search 
+ * @returns 
+ */
+export async function fetchCardBySearch(search) {
+    
+
+    const response = await fetch(`/api/card/search/${search}`);
+    if (response.status === 404) return null;
+    if (!response.ok) throw new Error('Failed to fetch card');
+    const result = await response.json();
+
+    console.log(result);
+    return result;
+}
