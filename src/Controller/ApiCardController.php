@@ -52,7 +52,11 @@ class ApiCardController extends AbstractController
         return $this->json($card);
     }
 
-    #[Route('/search/{search}', name: 'Show card', methods: ['GET'])]
+    #[Route('/search/{search}', name: 'List card with search', methods: ['GET'])]
+    #[OA\Parameter(name: 'search', description: 'search of the card on name or uuid', in: 'path', required: true, schema: new OA\Schema(type: 'string'))]
+    #[OA\Put(description: 'Get a card by search')]
+    #[OA\Response(response: 200, description: 'Show card')]
+    #[OA\Response(response: 404, description: 'Card not found')]
     public function cardSearch($search): Response
     {
         // Récupère uniquement les 20 premières cartes 
