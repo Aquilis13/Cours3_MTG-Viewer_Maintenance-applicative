@@ -75,4 +75,15 @@ class ApiCardController extends AbstractController
 
         return $this->json($cards);
     }
+
+    #[Route('/setcode/all', name: 'List all setCode for cards', methods: ['GET'])]
+    #[OA\Put(description: 'Get all setCode')]
+    #[OA\Response(response: 200, description: 'Show setCode')]
+    public function allSetCode(): Response
+    {
+        $cardRepository = $this->entityManager->getRepository(Card::class);
+        $query = $cardRepository->findAllSetCodes();
+
+        return $this->json($query);
+    }
 }

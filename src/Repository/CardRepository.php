@@ -32,4 +32,14 @@ class CardRepository extends ServiceEntityRepository
         ;
         return array_column($result, 'uuid');
     }
+
+    public function findAllSetCodes()
+    {
+        $result = $this->createQueryBuilder('c')
+            ->select('DISTINCT c.setCode')
+            ->getQuery()
+            ->getResult(AbstractQuery::HYDRATE_ARRAY)
+        ;
+        return array_column($result, 'setCode');
+    }
 }
