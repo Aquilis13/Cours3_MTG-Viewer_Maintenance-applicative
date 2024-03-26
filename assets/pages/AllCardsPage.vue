@@ -1,10 +1,13 @@
 <script setup>
 import { onMounted, ref, watch } from 'vue';
+import { useRoute } from 'vue-router';
 import { fetchAllCards, fetchAllSetCode } from '../services/cardService';
 
+const route = useRoute();
 const cards = ref([]);
 const setCodes = ref([]);
 const selected = ref("");
+
 const loadingCards = ref(true);
 const error = ref(false);
 const errorMessage = ref("");
@@ -25,6 +28,10 @@ async function loadsetCodes() {
 }
 
 onMounted(() => {
+    if(route.params.setCode){
+        selected.value = route.params.setCode;
+    }
+
     loadsetCodes();
     loadCards();
 });

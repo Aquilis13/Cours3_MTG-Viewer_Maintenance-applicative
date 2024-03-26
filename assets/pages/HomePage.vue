@@ -5,5 +5,6 @@
     <ul>
         <li><router-link :to="{ name: 'all-cards' }">Toutes les cartes</router-link></li>
         <li><router-link :to="{ name: 'search-cards' }">Rechercher une carte</router-link></li>
+        <li><router-link :to="{ name: 'all-set-codes' }">Tous les set-codes</router-link></li>
     </ul>
 </template>
