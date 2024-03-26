@@ -21,13 +21,10 @@ export async function fetchCard(uuid) {
  * @returns 
  */
 export async function fetchCardBySearch(search) {
-    
-
     const response = await fetch(`/api/card/search/${search}`);
     if (response.status === 404) return null;
     if (!response.ok) throw new Error('Failed to fetch card');
     const result = await response.json();
 
-    console.log(result);
     return result;
 }

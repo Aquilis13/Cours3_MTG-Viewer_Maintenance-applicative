@@ -1,38 +1,33 @@
-<script>
-// TODO: La page de recheche de cartes.
-import { onMounted, ref } from 'vue';
+<script setup>
+import { ref, watch } from 'vue';
 import { fetchCardBySearch } from '../services/cardService';
 
-export default {
-    data(){
-        return {
-            searchQuery: "",
-            cards: [],
-            loadingCards: false,
-            error: false,
-            errorMessage: ""
+const searchQuery = ref("");
+const cards = ref([]);
+const loadingCards = ref(false);
+const error = ref(false);
+const errorMessage = ref("");
+
+async function loadCards() {
+    if(3 <= searchQuery.value.length){
+        error.value = false;
+        loadingCards.value = true;
+        
+        try {
+            cards.value = await fetchCardBySearch(searchQuery.value);
+        } catch (err) {
+            error.value = true;
+            errorMessage.value = err;
         }
-    },
-    methods:{
-        loadCards() {
-            if(3 <= this.searchQuery.length){
-                this.error = false;
-                this.loadingCards = true;
-                
-                fetchCardBySearch(this.searchQuery)
-                .then(cards => {
-                    this.cards = cards;
-                })
-                .catch(error => {
-                    this.error = true;
-                    this.errorMessage = error;
-                });
-                
-                this.loadingCards = false; 
-            }
-        }
+        
+        loadingCards.value = false; 
     }
 }
+
+watch(searchQuery, () => {
+    loadCards();
+});
+
 </script>
 
 <template>
@@ -40,7 +35,7 @@ export default {
         <h1>Rechercher une Carte</h1>
     </div>
     <div class="card-list">   
-        <input type="text" placeholder="Search" v-model="searchQuery" @input="loadCards"/>
+        <input type="text" placeholder="Search" v-model="searchQuery"/>
 
         <div v-if="error">
             Une erreur s'est produite : <br />
@@ -55,15 +50,3 @@ export default {
         </div>
     </div>
 </template>
-
-<style>
-input {
-    border-radius: 13px;
-    width: 400px;
-    height: 25px;
-    border: 1px solid gray;
-    margin-bottom: 40px;
-    padding-left: 13px;
-    font-family: sans-serif;
-}
-</style>
