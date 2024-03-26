@@ -1,5 +1,14 @@
-export async function fetchAllCards() {
-    const response = await fetch('/api/card/all');
+/**
+ * Renvoie toutes les cartes
+ * 
+ * @param {String} setCode 
+ * @returns 
+ */
+export async function fetchAllCards(setCode) {
+    const response = setCode != null && setCode != ""
+        ? await fetch(`/api/card/all?set_code=${setCode}`)
+        : await fetch('/api/card/all')
+    ;
     if (!response.ok) throw new Error('Failed to fetch cards');
     const result = await response.json();
     return result;
@@ -24,7 +33,7 @@ export async function fetchCardBySearch(search, setCode) {
     const response = setCode != null && setCode != ""
         ? await fetch(`/api/card/search/${search}?set_code=${setCode}`)
         : await fetch(`/api/card/search/${search}`)
-    
+    ;
     if (response.status === 404) return null;
     if (!response.ok) throw new Error('Failed to fetch card');
     const result = await response.json();
