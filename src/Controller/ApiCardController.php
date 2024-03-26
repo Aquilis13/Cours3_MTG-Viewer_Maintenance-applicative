@@ -10,6 +10,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use OpenApi\Attributes as OA;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\Request;
 
 #[Route('/api/card', name: 'api_card_')]
 #[OA\Tag(name: 'Card', description: 'Routes for all about cards')]
@@ -21,10 +22,13 @@ class ApiCardController extends AbstractController
     ) {
     }
     #[Route('/all', name: 'List all cards', methods: ['GET'])]
+    #[OA\Parameter(name: 'set_code', description: 'set code of the card', in: 'query', required: false, schema: new OA\Schema(type: 'string'))]
     #[OA\Put(description: 'Return all cards in the database')]
     #[OA\Response(response: 200, description: 'List all cards')]
-    public function cardAll(): Response
+    public function cardAll(Request $request): Response
     {
+        $setCode = $request->query->get('set_code');
+
         // récupère toutes les cartes
         // $cards = $this->entityManager->getRepository(Card::class)->findAll();
 
@@ -33,7 +37,18 @@ class ApiCardController extends AbstractController
         $offset = 0;
 
         $cardRepository = $this->entityManager->getRepository(Card::class);
-        $cards = $cardRepository->findBy([], null, $maxResult, $offset);
+        $cards = $cardRepository->createQueryBuilder('c');
+
+        if ($setCode !== null) {
+            $cards->where('c.setCode = :setCode')
+                ->setParameter('setCode', $setCode);
+        }
+
+        $cards = $cards
+            ->setMaxResults($maxResult)
+            ->setFirstResult($offset)
+            ->getQuery()
+            ->getResult();
 
         return $this->json($cards);
     }
@@ -54,11 +69,14 @@ class ApiCardController extends AbstractController
 
     #[Route('/search/{search}', name: 'List card with search', methods: ['GET'])]
     #[OA\Parameter(name: 'search', description: 'search of the card on name or uuid', in: 'path', required: true, schema: new OA\Schema(type: 'string'))]
+    #[OA\Parameter(name: 'set_code', description: 'set code of the card', in: 'query', required: false, schema: new OA\Schema(type: 'string'))]
     #[OA\Put(description: 'Get a card by search')]
     #[OA\Response(response: 200, description: 'Show card')]
     #[OA\Response(response: 404, description: 'Card not found')]
-    public function cardSearch($search): Response
+    public function cardSearch(Request $request, $search): Response
     {
+        $setCode = $request->query->get('set_code');
+
         // Récupère uniquement les 20 premières cartes 
         $maxResult = 20;
 
@@ -68,8 +86,13 @@ class ApiCardController extends AbstractController
             ->orWhere('c.uuid = :searchUuid')
             ->setParameter('searchName', '%' . $search . '%')
             ->setParameter('searchUuid', $search)
-            ->setMaxResults($maxResult)
-            ->getQuery();
+            ->setMaxResults($maxResult);
+
+        if ($setCode !== null) {
+            $query->andWhere('c.setCode = :setCode')
+                ->setParameter('setCode', $setCode);
+        }
+        $query = $query->getQuery();
 
         $cards = $query->getResult();
 
