@@ -42,4 +42,21 @@ class CardRepository extends ServiceEntityRepository
         ;
         return array_column($result, 'setCode');
     }
+
+    public function countCards($setCode) : int
+    {
+        $result = $this->createQueryBuilder('c')
+            ->select('COUNT(c) as nb_result');
+
+        if ($setCode !== null) {
+            $result->where('c.setCode = :setCode')
+                ->setParameter('setCode', $setCode);
+        }
+
+        $result = $result
+            ->getQuery()
+            ->getSingleScalarResult()
+        ;
+        return $result;
+    }
 }

@@ -28,29 +28,33 @@ class ApiCardController extends AbstractController
     public function cardAll(Request $request): Response
     {
         $setCode = $request->query->get('set_code');
+        $page = $request->query->get('page');
 
-        // récupère toutes les cartes
-        // $cards = $this->entityManager->getRepository(Card::class)->findAll();
-
-        // Récupère uniquement les 20 premières cartes 
-        $maxResult = 20;
-        $offset = 0;
+        $maxResult = 100;
+        $offset = $maxResult * $page - 100;
 
         $cardRepository = $this->entityManager->getRepository(Card::class);
+
+        $nbCards = $cardRepository->countCards($setCode);  
         $cards = $cardRepository->createQueryBuilder('c');
 
         if ($setCode !== null) {
             $cards->where('c.setCode = :setCode')
                 ->setParameter('setCode', $setCode);
         }
-
+        
         $cards = $cards
             ->setMaxResults($maxResult)
             ->setFirstResult($offset)
             ->getQuery()
-            ->getResult();
+            ->getResult()
+        ;
 
-        return $this->json($cards);
+        $response = [
+            "nb_result" => $nbCards,
+            "data" => $cards
+        ];
+        return $this->json($response);
     }
 
     #[Route('/{uuid}', name: 'Show card', methods: ['GET'])]
