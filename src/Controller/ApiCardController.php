@@ -28,7 +28,10 @@ class ApiCardController extends AbstractController
     public function cardAll(Request $request): Response
     {
         $setCode = $request->query->get('set_code');
-        $page = $request->query->get('page');
+        $page = $request->query->get('page') 
+            ? $request->query->get('page')
+            : 1
+        ;
 
         $maxResult = 100;
         $offset = $maxResult * $page - 100;
