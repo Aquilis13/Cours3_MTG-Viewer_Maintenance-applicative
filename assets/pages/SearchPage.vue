@@ -81,7 +81,6 @@ watch(cards, (newCards) => {
         <div v-if="loadingCards">Loading...</div>
         <div v-else>  
             <div class="card" v-for="card in cards" :key="card.id">
-                Set ode : {{ card.setCode }}
                 <router-link :to="{ name: 'get-card', params: { uuid: card.uuid } }"> {{ card.name }} - {{ card.uuid }} </router-link>
             </div>
         </div>
