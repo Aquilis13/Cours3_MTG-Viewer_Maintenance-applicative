@@ -20,10 +20,27 @@ export async function fetchCard(uuid) {
  * @param {String} search 
  * @returns 
  */
-export async function fetchCardBySearch(search) {
-    const response = await fetch(`/api/card/search/${search}`);
+export async function fetchCardBySearch(search, setCode) {
+    const response = setCode != null && setCode != ""
+        ? await fetch(`/api/card/search/${search}?set_code=${setCode}`)
+        : await fetch(`/api/card/search/${search}`)
+    
     if (response.status === 404) return null;
     if (!response.ok) throw new Error('Failed to fetch card');
+    const result = await response.json();
+
+    return result;
+}
+
+/**
+ * Récupère l'intégraliter des setCode disponible
+ * 
+ * @returns 
+ */
+export async function fetchAllSetCode() {
+    const response = await fetch(`/api/card/setcode/all`);
+    if (response.status === 404) return null;
+    if (!response.ok) throw new Error('Failed to fetch setCode');
     const result = await response.json();
 
     return result;

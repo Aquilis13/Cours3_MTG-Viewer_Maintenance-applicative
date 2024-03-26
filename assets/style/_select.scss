@@ -1,0 +1,16 @@
+select {
+    width: 150px;
+    height: 29px;
+    border-radius: 12px;
+    border: 1px solid gray;
+    padding-left: 15px;
+    margin-bottom: 40px;
+}
+
+.notInCards {
+    color: gray;
+}
+
+.isInCards {
+    font-weight: bold;
+}
