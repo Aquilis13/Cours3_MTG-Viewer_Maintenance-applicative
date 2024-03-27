@@ -1,5 +1,13 @@
 # MTG Viewer    
 
+## Nom
+`CHANOT Flora`
+
+## Chemin
+Application : http://0.0.0.0:8080/  
+
+Documentation de l'api : http://0.0.0.0:8080/api/doc
+
 ## Description
 MTG Viewer est un projet permettant de parcourrir et rechercher des cartes de Magic The Gathering. 
 Il est basé sur une API REST, et utilise le framework Symfony pour le back-end et VueJs pour le front-end.
