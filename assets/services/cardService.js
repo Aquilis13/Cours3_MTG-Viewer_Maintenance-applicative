@@ -4,10 +4,10 @@
  * @param {String} setCode 
  * @returns 
  */
-export async function fetchAllCards(setCode) {
+export async function fetchAllCards(page, setCode) {
     const response = setCode != null && setCode != ""
-        ? await fetch(`/api/card/all?set_code=${setCode}`)
-        : await fetch('/api/card/all')
+        ? await fetch(`/api/card/all?page=${page}&set_code=${setCode}`)
+        : await fetch(`/api/card/all?page=${page}`)
     ;
     if (!response.ok) throw new Error('Failed to fetch cards');
     const result = await response.json();
